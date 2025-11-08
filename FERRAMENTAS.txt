@@ -1,0 +1,6 @@
+---web
+https://supabase.com/dashboard/org/eefmeamjbgdllewucedd
+
+
+---maquina virtual
+https://vercel.com/signup
