@@ -13,12 +13,10 @@ function App() {
     buscarHistorico();
   }, []);
 
-  // Atualiza o total sempre que o histórico muda
   useEffect(() => {
     buscarTotalPontos();
   }, [historico]);
 
-  // 🔹 Buscar lista de tarefas
   async function buscarTarefas() {
     const { data, error } = await supabase.from("tarefa").select("*");
     if (error) console.error("❌ Erro ao buscar tarefas:", error);
@@ -26,7 +24,6 @@ function App() {
     setCarregando(false);
   }
 
-  // 🔹 Registrar conclusão de tarefa
   async function concluirTarefa(idTarefa) {
     try {
       const hoje = new Date().toISOString().split("T")[0];
@@ -50,13 +47,12 @@ function App() {
       if (error) throw error;
 
       alert("🎉 Tarefa concluída com sucesso!");
-      buscarHistorico(); // Atualiza tudo
+      buscarHistorico();
     } catch (err) {
       console.error("❌ Erro ao concluir tarefa:", err.message);
     }
   }
 
-  // 🔹 Buscar histórico
   async function buscarHistorico() {
     const { data, error } = await supabase
       .from("tarefa_concluida")
@@ -79,7 +75,6 @@ function App() {
     setHistorico(data || []);
   }
 
-  // 🔹 Buscar total de pontos (com auto detecção)
   async function buscarTotalPontos() {
     try {
       const { data, error } = await supabase.from("v_total_pontos").select("*");
@@ -109,10 +104,8 @@ function App() {
 
       if (registro) {
         const pontos = Number(registro[chavePontos]) || 0;
-        console.log(`🏅 Total encontrado para ${usuario}:`, pontos);
         setTotalPontos((prev) => (prev !== pontos ? pontos : prev));
       } else {
-        console.warn("⚠️ Usuário não encontrado na view:", usuario);
         setTotalPontos(0);
       }
     } catch (e) {
@@ -121,9 +114,6 @@ function App() {
     }
   }
 
-  // ==========================================================
-  //                        RENDER
-  // ==========================================================
   return (
     <div
       style={{
@@ -135,11 +125,9 @@ function App() {
     >
       <h1>Plano de Pontos do Ben 🏆</h1>
 
-      {/* ===================== CABEÇALHO E BARRAS ===================== */}
       <div style={{ marginBottom: 25 }}>
         <h2 style={{ color: "#4caf50" }}>Total de pontos: {totalPontos}</h2>
 
-        {/* 🎯 Metas de recompensas */}
         {[
           { nome: "🛹 Skate", meta: 2500, cor: "#4caf50" },
           { nome: "🎮 Videogame", meta: 7500, cor: "#2196f3" },
@@ -184,7 +172,6 @@ function App() {
         })}
       </div>
 
-      {/* ===================== TAREFAS ===================== */}
       <h3>Tarefas disponíveis</h3>
 
       {carregando ? (
@@ -203,9 +190,17 @@ function App() {
               backgroundColor: "#f9f9f9",
             }}
           >
-            <b>{t.col_nome}</b> — {t.col_ponto} pts
-            <br />
-            <small>
+            <p
+              style={{
+                fontSize: 16,
+                color: "#333", // cor mais forte
+                fontWeight: 600,
+                marginBottom: 4,
+              }}
+            >
+              {t.col_nome} — {t.col_ponto} pts
+            </p>
+            <small style={{ color: "#666" }}>
               Categoria: {t.col_cat} • Frequência: {t.col_per}
             </small>
             {t.col_descr && (
@@ -230,7 +225,6 @@ function App() {
         ))
       )}
 
-      {/* ===================== HISTÓRICO ===================== */}
       <h3 style={{ marginTop: 30 }}>Histórico de tarefas concluídas</h3>
 
       {historico.length === 0 ? (
